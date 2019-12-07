@@ -33,7 +33,7 @@ RUN apt-get install -y php${PHP_VER}-curl
 RUN apt-get -y install curl git openssl unzip zip 
 
 #install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && chmod +x /usr/bin/composer 
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 # SETUP WORKDIR
 RUN mkdir /workspace
@@ -56,6 +56,18 @@ RUN su - $USERNAME -c "composer global require laravel/installer"
 #install nodejs/npm
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
+
+#prepare for vscode
+RUN apt-get -y install --no-install-recommends dialog
+RUN apt-get -y install git iproute2 procps lsb-release
+RUN chmod -R 777 /root 
+RUN chown -R $USERNAME /root
+
+#install vim
+RUN apt-get -y install vim
+
+
+
 
 USER $USERNAME:$USERNAME
 
