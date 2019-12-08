@@ -10,5 +10,6 @@ setup: Dockerfile
 		   -v ~/bin:/home/coder/bin  \
 		   -v ~/.ssh:/home/coder/.ssh  \
 		   -v ~/.gitconfig:/home/coder/.gitconfig  \
+		   --network swdevnet \
 		   -d swdev
 	docker ps

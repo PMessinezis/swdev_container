@@ -66,6 +66,8 @@ RUN chown -R $USERNAME /root
 #install vim
 RUN apt-get -y install vim
 
+#install php-mysql and mysql client
+RUN apt-get -y install php${PHP_VER}-mysql mysql-client
 
 
 

@@ -1,0 +1,4 @@
+docker network create swdevnet
+docker run --name mariadb -p 3306:3306 --network swdevnet -v $HOME/workspace/DATABASE:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=xxxxxx -d mariadb:latest --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+docker run --rm --name phpmyadmin --network swdevnet -e PMA_HOST=mariadb -p 8088:80 -d phpmyadmin/phpmyadmin
+
