@@ -18,6 +18,7 @@ ARG USER_GID=$USER_UID
 ARG PHP_VER=7.2
 ENV TZ=Europe/London
 SHELL ["/bin/bash" , "-c"]
+RUN echo A
 RUN apt-get update
 RUN apt-get -y install --no-install-recommends apt-utils dialog 2>&1 
 
@@ -28,6 +29,7 @@ RUN apt-get install -y php${PHP_VER}-mbstring
 RUN apt-get install -y php${PHP_VER}-zip 
 RUN apt-get install -y php${PHP_VER}-xml
 RUN apt-get install -y php${PHP_VER}-curl
+RUN apt-get install -y php${PHP_VER}-sqlite3
 
 #install git
 RUN apt-get -y install curl git openssl unzip zip 
