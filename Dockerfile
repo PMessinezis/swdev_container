@@ -15,7 +15,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG USERNAME=coder
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ARG PHP_VER=7.2
+ARG PHP_VER=7.3
 ENV TZ=Europe/London
 SHELL ["/bin/bash" , "-c"]
 RUN echo A
