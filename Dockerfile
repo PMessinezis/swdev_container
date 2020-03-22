@@ -1,14 +1,4 @@
-# base will be UBUNTU
-# we will add ( or install ??? )  PHP and COMPOSER
-# we will also need nodejs/npm
-# we will also need git 
-# and will link ~/workspace with /workspace
-# what else ???
-
-# we will also need a mysql/mariadb and phpmyadmin - in a separate container ?
-
-
-FROM ubuntu as swdev
+FROM php:7-cli as swdev
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Or your actual UID, GID on Linux if not the default 1000
@@ -22,20 +12,24 @@ RUN echo A
 RUN apt-get update
 RUN apt-get -y install --no-install-recommends apt-utils dialog 2>&1 
 
-#install PHP
-RUN apt-get install -y php${PHP_VER}-cli 
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
 RUN php -v
-RUN apt-get install -y php${PHP_VER}-mbstring 
-RUN apt-get install -y php${PHP_VER}-zip 
-RUN apt-get install -y php${PHP_VER}-xml
-RUN apt-get install -y php${PHP_VER}-curl
-RUN apt-get install -y php${PHP_VER}-sqlite3
 
-#install git
-RUN apt-get -y install curl git openssl unzip zip 
+RUN apt-get -y install curl git openssl iproute2 procps iproute2 lsb-release unzip zip  gettext sqlite3
+RUN apt-get install -y zlib1g-dev libzip-dev libxml2-dev
 
-#install composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+RUN docker-php-ext-configure zip --with-libzip 
+RUN docker-php-ext-install zip pdo pdo_mysql gettext calendar mysqli 
+
+
+RUN apt-get install -y gettext locales
+RUN sed -i -e 's/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/' /etc/locale.gen
+RUN sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
+RUN sed -i -e 's/# fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
+RUN locale-gen
+
 
 # SETUP WORKDIR
 RUN mkdir /workspace
@@ -50,27 +44,24 @@ RUN useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME
 RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME 
 RUN chmod 0440 /etc/sudoers.d/$USERNAME 
 
-#install laravel
-RUN su - $USERNAME -c "composer global selfupdate"
-RUN su - $USERNAME -c "composer global require hirak/prestissimo"
-RUN su - $USERNAME -c "composer global require laravel/installer"
-
 #install nodejs/npm
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install -y nodejs
 
 #prepare for vscode
-RUN apt-get -y install --no-install-recommends dialog
-RUN apt-get -y install git iproute2 procps lsb-release
 RUN chmod -R 777 /root 
 RUN chown -R $USERNAME /root
+
+
+RUN composer global selfupdate
+RUN su - $USERNAME -c "composer global require hirak/prestissimo"
+RUN su - $USERNAME -c "composer global require laravel/installer"
 
 #install vim
 RUN apt-get -y install vim
 
 #install php-mysql and mysql client
-RUN apt-get -y install php${PHP_VER}-mysql mysql-client
-
+RUN apt-get -y install default-mysql-client-core
 
 
 USER $USERNAME:$USERNAME
