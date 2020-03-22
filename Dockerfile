@@ -1,4 +1,4 @@
-FROM php:7-cli as swdev
+FROM php:7.3-cli as swdev
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Or your actual UID, GID on Linux if not the default 1000
