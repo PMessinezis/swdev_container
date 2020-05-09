@@ -1,11 +1,11 @@
-FROM php:7.3-cli as swdev
+FROM php:7.4-cli as swdev
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Or your actual UID, GID on Linux if not the default 1000
 ARG USERNAME=coder
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ARG PHP_VER=7.3
+ARG PHP_VER=7.4
 ENV TZ=Europe/London
 SHELL ["/bin/bash" , "-c"]
 RUN echo A
@@ -20,7 +20,7 @@ RUN apt-get install -y zlib1g-dev libzip-dev libxml2-dev
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN docker-php-ext-configure zip --with-libzip 
+RUN docker-php-ext-configure zip 
 RUN docker-php-ext-install zip pdo pdo_mysql gettext calendar mysqli 
 
 
@@ -28,6 +28,8 @@ RUN apt-get install -y gettext locales
 RUN sed -i -e 's/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/' /etc/locale.gen
 RUN sed -i -e 's/# de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
 RUN sed -i -e 's/# fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
+RUN sed -i -e 's/# it_IT.UTF-8 UTF-8/it_IT.UTF-8 UTF-8/' /etc/locale.gen
+RUN sed -i -e 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen
 RUN locale-gen
 
 
